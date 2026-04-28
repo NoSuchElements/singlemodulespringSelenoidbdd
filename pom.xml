@@ -50,7 +50,7 @@
 		<maven-surefire.version>3.5.2</maven-surefire.version>
 		<aspectj.version>1.9.22.1</aspectj.version>
 		<!-- PDF reporter Plugins -->
-		<split.pdf.reporter.version>1.1.5</split.pdf.reporter.version>
+		<pdf.reporter.version>1.5.0</pdf.reporter.version>
 
 		<!-- Sauce Labs -->
 		<sauce.build>
@@ -73,12 +73,12 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.springframework.retry</groupId>
-		    <artifactId>spring-retry</artifactId>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-aop</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
 
@@ -149,7 +149,7 @@
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>${testng.version}</version>
-		<!--	<scope>test</scope>   -->
+			<!--	<scope>test</scope>   -->
 		</dependency>
 
 		<!-- Cucumber -->
@@ -226,9 +226,9 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.apache.pdfbox</groupId>
-		    <artifactId>pdfbox</artifactId>
-		    <version>3.0.7</version>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.7</version>
 		</dependency>
 
 		<!-- Source:
@@ -268,91 +268,95 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
-		 
+
 	</dependencies>
 
 	<build>
-        <plugins>
-            <!-- 1. PROPERTIES PLUGIN - LOADS qtest.properties FIRST -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>read-qtest-properties</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>${project.basedir}/src/main/resources/qtest.properties</file>
-                            </files>
-                            <quiet>false</quiet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
- 
-            <!-- 2. COMPILER -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler.version}</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <parameters>true</parameters>
-                </configuration>
-            </plugin>
- 
-            <!-- 3. SINGLE FAILSAFE - Handles ALL tests (TestNG + Cucumber) -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>3.2.5</version>
-            <dependencies>
-                <dependency>
-                    <groupId>org.apache.maven.surefire</groupId>
-                    <artifactId>surefire-testng</artifactId>
-                    <version>3.5.2</version>
-                </dependency>
-            </dependencies>
-            <executions>
-                <execution>
-                    <id>integration-test</id>
-                    <phase>integration-test</phase>
-                    <goals><goal>integration-test</goal></goals>
-                    <configuration>
-                        <suiteXmlFiles>
-                            <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-                        </suiteXmlFiles>
-						 <properties>
-						 	<property>
-								<name>dataproviderthreadcount</name>
-								<value>2</value>
-							</property>
-						</properties>
-                        <useFile>false</useFile>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>verify</id>
-                    <phase>verify</phase>
-                    <goals><goal>verify</goal></goals>
-                </execution>
-            </executions>
-        </plugin>
-        
-		<!-- Split PDF Reporter Plugin (replaces cucumber-pdf-qtest-plugin) -->
+		<plugins>
+			<!-- 1. PROPERTIES PLUGIN - LOADS qtest.properties FIRST -->
 			<plugin>
-				<groupId>com.qtest</groupId>
-				<artifactId>split-pdf-reporter-plugin</artifactId>
-				<version>${split.pdf.reporter.version}</version>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.2.1</version>
 				<executions>
 					<execution>
-						<id>generate-per-feature-pdfs</id>
+						<id>read-qtest-properties</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>
+									${project.basedir}/src/main/resources/qtest.properties</file>
+							</files>
+							<quiet>false</quiet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- 2. COMPILER -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler.version}</version>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+					<parameters>true</parameters>
+				</configuration>
+			</plugin>
+
+			<!-- 3. SINGLE FAILSAFE - Handles ALL tests (TestNG + Cucumber) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.2.5</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-testng</artifactId>
+						<version>3.5.2</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<suiteXmlFiles>
+								<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+							</suiteXmlFiles>
+							<properties>
+								<property>
+									<name>dataproviderthreadcount</name>
+									<value>2</value>
+								</property>
+							</properties>
+							<useFile>false</useFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.nosuchelements</groupId>
+				<artifactId>cucumber-pdf-reporter</artifactId>
+				<version>1.5.0</version>
+				<executions>
+					<execution>
+						<id>generate-pdf-reports</id>
 						<phase>post-integration-test</phase>
 						<goals>
 							<goal>generate-pdfs</goal>
@@ -360,52 +364,53 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- Single JSON mode (default produced by Cucumber runner) -->
-					<cucumberJson>${project.build.directory}/cucumber-reports/Cucumber.json</cucumberJson>
- 
-					<!-- Where PDFs will be written -->
-					<reportOutputDir>${project.build.directory}/pdf-reports</reportOutputDir>
- 
-					<!-- Optional: use glob instead of single file, if needed in
-					future -->
-					<!--
-					<cucumberJsonPattern>target/**/cucumber*.json</cucumberJsonPattern> -->
+					<configuration>
+						<reportMode>both</reportMode>
+						<cucumberJsonPattern>**/cucumber*.json</cucumberJsonPattern>
+						<reportTitle>My Project Full Run</reportTitle>
+						<consolidatedReportName>full-report.pdf</consolidatedReportName>
+						<tagPrefix>QTEST_TC_</tagPrefix>
+					</configuration>
+					<cucumberJson>${project.build.directory}/cucumber.json</cucumberJson>
+					<reportOutputDir>${project.build.directory}/cucumber-reports</reportOutputDir>
 				</configuration>
 			</plugin>
- 
- 
-            <!-- 4. QTEST CUCUMBER PLUGIN -->
-            <plugin>
-                <groupId>com.nosuchelements</groupId>
-                <artifactId>qtest-cucumber-plugin</artifactId>
-                <version>1.2.0</version>
-                <executions>
-                    <execution>
-                        <id>update-qtest</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>update-qtest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- These will be resolved from qtest.properties file -->
-                    <qtestUrl>${qtest.url}</qtestUrl>
-                    <qtestProjectId>${qtest.project.id}</qtestProjectId>
-                    <qtestReleaseCycleId>${qtest.release.cycle.id}</qtestReleaseCycleId>
-                    <attachScreenshots>${qtest.attach.screenshots}</attachScreenshots>
-                    <connectionTimeout>${qtest.connection.timeout}</connectionTimeout>
-                    <retryAttempts>${qtest.retry.attempts}</retryAttempts>
-                    <enabled>${qtest.enabled}</enabled>
-                    <failOnError>${qtest.fail.on.error}</failOnError>
- 
-                    <!-- Properties file location (optional fallback) -->
-                    <propertiesFile>src/main/resources/qtest.properties</propertiesFile>
- 
-                    <!-- Cucumber JSON report location -->
-                    <cucumberJsonReportDirectory>${project.build.directory}/cucumber-reports</cucumberJsonReportDirectory>
-                </configuration>
-            </plugin>
- 
-        </plugins>
-    </build></project>
+
+
+			<!-- 4. QTEST CUCUMBER PLUGIN -->
+			<plugin>
+				<groupId>com.nosuchelements</groupId>
+				<artifactId>qtest-cucumber-plugin</artifactId>
+				<version>1.2.0</version>
+				<executions>
+					<execution>
+						<id>update-qtest</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>update-qtest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- These will be resolved from qtest.properties file -->
+					<qtestUrl>${qtest.url}</qtestUrl>
+					<qtestProjectId>${qtest.project.id}</qtestProjectId>
+					<qtestReleaseCycleId>${qtest.release.cycle.id}</qtestReleaseCycleId>
+					<attachScreenshots>${qtest.attach.screenshots}</attachScreenshots>
+					<connectionTimeout>${qtest.connection.timeout}</connectionTimeout>
+					<retryAttempts>${qtest.retry.attempts}</retryAttempts>
+					<enabled>${qtest.enabled}</enabled>
+					<failOnError>${qtest.fail.on.error}</failOnError>
+
+					<!-- Properties file location (optional fallback) -->
+					<propertiesFile>src/main/resources/qtest.properties</propertiesFile>
+
+					<!-- Cucumber JSON report location -->
+					<cucumberJsonReportDirectory>
+						${project.build.directory}/cucumber-reports</cucumberJsonReportDirectory>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
