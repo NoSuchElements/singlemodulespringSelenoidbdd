@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+    <configuration>
+        <theme>dark</theme>
+        <encoding>UTF-8</encoding>
+        <protocol>https</protocol>
+        <documentTitle>Spring Cucumber Automation Report</documentTitle>
+        <reportName>Test Execution Report</reportName>
+        <timeStampFormat>MMM dd, yyyy HH:mm:ss</timeStampFormat>
+        <css>
+            <![CDATA[
+                .r-img { width: 80%; }
+            ]]>
+        </css>
+        <js>
+            <![CDATA[
+                // Custom JavaScript if needed
+            ]]>
+        </js>
+    </configuration>
+</extentreports>
