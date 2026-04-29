@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    cq:lastReplicated="{Date}2025-10-03T11:32:42.604-04:00"
+    cq:lastReplicatedBy="katwo"
+    cq:lastReplicationAction="Activate"
+    jcr:language="en"
+    jcr:mixinTypes="[cq:ReplicationStatus,mix:language]"
+    jcr:primaryType="sling:Folder"
+    sling:basename="marks">
+    <ACCESSIBILITY-LINK-001
+        cq:lastReplicated="{Date}2025-10-03T11:33:21.435-04:00"
+        cq:lastReplicatedBy="katwo"
+        cq:lastReplicationAction="Activate"
+        jcr:mixinTypes="[cq:ReplicationStatus]"
+        jcr:primaryType="sling:MessageEntry"
+        sling:message="Click this icon to learn more about our commitment to customers and employees with disabilities."/>
+</jcr:root>
