@@ -4,109 +4,66 @@ import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebDriver;
 
 /**
- * • ThreadLocal storage for WebDriver instances • Ensures thread safety for
- * parallel test execution • Features: o Thread-isolated driver instances o
- * Separate storage for Web and Mobile drivers o Session ID tracking for
- * reporting o Test name storage for context
+ * Thread-safe storage for all driver instances and session metadata.
+ * Each thread (parallel Cucumber scenario) gets fully isolated state.
+ *
+ * Stored per thread:
+ *   webDriver    - Selenium WebDriver for web channel
+ *   appiumDriver - Appium driver for mobile channel
+ *   sessionId    - Selenium / Appium session ID from RemoteWebDriver
+ *   testName     - Scenario / test name for logging and reporting
+ *   gridVideoUrl - Selenoid video recording URL  (set when execution.mode=SELENOID)
+ *   gridVncUrl   - Selenoid VNC live-view URL     (set when execution.mode=SELENOID)
+ *
+ * IMPORTANT: Always call removeAll() in @After hook to prevent
+ * memory leaks in long-running parallel suites.
  */
 public class ThreadLocalDriver {
-	private static final ThreadLocal<WebDriver> webDriver = new ThreadLocal<>();
-	private static final ThreadLocal<AppiumDriver> appiumDriver = new ThreadLocal<>();
-	private static final ThreadLocal<String> sessionId = new ThreadLocal<>();
-	private static final ThreadLocal<String> testName = new ThreadLocal<>();
 
-	/**
-	 * o Set WebDriver instance for current thread
-	 */
-	public static void setWebDriver(WebDriver driver) {
-		webDriver.set(driver);
-	}
+    private static final ThreadLocal<WebDriver>    webDriver    = new ThreadLocal<>();
+    private static final ThreadLocal<AppiumDriver> appiumDriver = new ThreadLocal<>();
+    private static final ThreadLocal<String>       sessionId    = new ThreadLocal<>();
+    private static final ThreadLocal<String>       testName     = new ThreadLocal<>();
+    private static final ThreadLocal<String>       gridVideoUrl = new ThreadLocal<>();
+    private static final ThreadLocal<String>       gridVncUrl   = new ThreadLocal<>();
 
-	/**
-	 * o Get WebDriver instance for current thread
-	 */
-	public static WebDriver getWebDriver() {
-		return webDriver.get();
-	}
+    // ── WebDriver ────────────────────────────────────────────────────────────────
+    public static void      setWebDriver(WebDriver driver) { webDriver.set(driver); }
+    public static WebDriver getWebDriver()                 { return webDriver.get(); }
+    public static void      removeWebDriver()              { webDriver.remove(); }
 
-	/**
-	 * o Set AppiumDriver instance for current thread
-	 */
-	public static void setAppiumDriver(AppiumDriver driver) {
-		appiumDriver.set(driver);
-	}
+    // ── AppiumDriver ─────────────────────────────────────────────────────────────
+    public static void         setAppiumDriver(AppiumDriver driver) { appiumDriver.set(driver); }
+    public static AppiumDriver getAppiumDriver()                    { return appiumDriver.get(); }
+    public static void         removeAppiumDriver()                 { appiumDriver.remove(); }
 
-	/**
-	 * o Get AppiumDriver instance for current thread
-	 */
-	public static AppiumDriver getAppiumDriver() {
-		return appiumDriver.get();
-	}
+    // ── Session ID ───────────────────────────────────────────────────────────────
+    public static void   setSessionId(String id) { sessionId.set(id); }
+    public static String getSessionId()          { return sessionId.get(); }
+    public static void   removeSessionId()       { sessionId.remove(); }
 
-	/**
-	 * o Set session ID for current thread
-	 */
-	public static void setSessionId(String id) {
-		sessionId.set(id);
-	}
+    // ── Test Name ────────────────────────────────────────────────────────────────
+    public static void   setTestName(String name) { testName.set(name); }
+    public static String getTestName()            { return testName.get(); }
+    public static void   removeTestName()         { testName.remove(); }
 
-	/**
-	 * o Get session ID for current thread
-	 */
-	public static String getSessionId() {
-		return sessionId.get();
-	}
+    // ── Selenoid Video URL ───────────────────────────────────────────────────────
+    public static void   setGridVideoUrl(String url) { gridVideoUrl.set(url); }
+    public static String getGridVideoUrl()           { return gridVideoUrl.get(); }
+    public static void   removeGridVideoUrl()        { gridVideoUrl.remove(); }
 
-	/**
-	 * o Set test name for current thread
-	 */
-	public static void setTestName(String name) {
-		testName.set(name);
-	}
+    // ── Selenoid VNC URL ─────────────────────────────────────────────────────────
+    public static void   setGridVncUrl(String url) { gridVncUrl.set(url); }
+    public static String getGridVncUrl()           { return gridVncUrl.get(); }
+    public static void   removeGridVncUrl()        { gridVncUrl.remove(); }
 
-	/**
-	 * o Get test name for current thread
-	 */
-	public static String getTestName() {
-		return testName.get();
-	}
-
-	/**
-	 * o Remove WebDriver from current thread
-	 */
-	public static void removeWebDriver() {
-		webDriver.remove();
-	}
-
-	/**
-	 * o Remove AppiumDriver from current thread
-	 */
-	public static void removeAppiumDriver() {
-		appiumDriver.remove();
-	}
-
-	/**
-	 * o Remove session ID from current thread
-	 */
-	public static void removeSessionId() {
-		sessionId.remove();
-	}
-
-	/**
-	 * o Remove test name from current thread
-	 */
-	public static void removeTestName() {
-		testName.remove();
-	}
-
-	/**
-	 * o Remove all thread-local variables for current thread o Call this in test
-	 * teardown to prevent memory leaks
-	 */
-	public static void removeAll() {
-		removeWebDriver();
-		removeAppiumDriver();
-		removeSessionId();
-		removeTestName();
-	}
+    // ── Teardown - call in @After hook to prevent memory leaks ───────────────────
+    public static void removeAll() {
+        removeWebDriver();
+        removeAppiumDriver();
+        removeSessionId();
+        removeTestName();
+        removeGridVideoUrl();
+        removeGridVncUrl();
+    }
 }

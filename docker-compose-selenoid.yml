@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Selenoid Local Grid Stack
+# Starts: Selenoid (grid) + Selenoid UI (dashboard) + ggr-ui (video recorder)
+#
+# Usage:
+#   1. Pull browser images first:
+#        docker pull selenoid/vnc:chrome_latest
+#        docker pull selenoid/vnc:firefox_latest
+#        docker pull selenoid/vnc:MicrosoftEdge_latest
+#        docker pull selenoid/video-recorder:latest-release
+#
+#   2. Start the stack:
+#        docker-compose -f docker-compose-selenoid.yml up -d
+#
+#   3. Run tests:
+#        mvn verify -Dexecution.mode=SELENOID -Dplatform=WEB -Dbrowser=chrome
+#
+#   4. View live sessions:
+#        http://localhost:8080
+#
+#   5. Stop the stack:
+#        docker-compose -f docker-compose-selenoid.yml down
+# ─────────────────────────────────────────────────────────────────────────────
+version: "3.8"
+
+services:
+
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    container_name: selenoid
+    ports:
+      - "4444:4444"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./selenoid:/etc/selenoid          # browsers.json lives here
+      - ./selenoid/video:/opt/selenoid/video
+      - ./selenoid/logs:/opt/selenoid/logs
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
+    command: ["-conf", "/etc/selenoid/browsers.json",
+              "-video-output-dir", "/opt/selenoid/video",
+              "-log-output-dir",   "/opt/selenoid/logs",
+              "-timeout",          "5m",
+              "-limit",            "10"]
+    restart: unless-stopped
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui:latest-release
+    container_name: selenoid-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - selenoid
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+    restart: unless-stopped
+
+volumes:
+  selenoid-video:
+  selenoid-logs:
