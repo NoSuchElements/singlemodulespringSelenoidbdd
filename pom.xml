@@ -82,18 +82,6 @@
 		</dependency>
 
 
-		<!-- Spring Framework -->
-		<!--<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-		</dependency>-->
-
 		<!-- Selenium WebDriver -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -103,7 +91,7 @@
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit</artifactId>
-			<version>${cucumber.version}</version>  <!-- ADD THIS -->
+			<version>${cucumber.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -149,7 +137,6 @@
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>${testng.version}</version>
-			<!--	<scope>test</scope>   -->
 		</dependency>
 
 		<!-- Cucumber -->
@@ -243,7 +230,7 @@
 		<dependency>
 			<groupId>com.qasymphony.qtest</groupId>
 			<artifactId>qtest-sdk-java</artifactId>
-			<version>1.4.10</version> <!-- or the latest available -->
+			<version>1.4.10</version>
 		</dependency>
 		<dependency>
 			<groupId>io.netty</groupId>
@@ -334,9 +321,11 @@
 							<properties>
 								<property>
 									<name>dataproviderthreadcount</name>
-									<value>2</value>
+									<value>${parallel.threads}</value>
 								</property>
 							</properties>
+							<parallel>methods</parallel>
+							<threadCount>${parallel.threads}</threadCount>
 							<useFile>false</useFile>
 						</configuration>
 					</execution>
@@ -376,7 +365,6 @@
 				</configuration>
 			</plugin>
 
-
 			<!-- 4. QTEST CUCUMBER PLUGIN -->
 			<plugin>
 				<groupId>com.nosuchelements</groupId>
@@ -392,7 +380,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- These will be resolved from qtest.properties file -->
 					<qtestUrl>${qtest.url}</qtestUrl>
 					<qtestProjectId>${qtest.project.id}</qtestProjectId>
 					<qtestReleaseCycleId>${qtest.release.cycle.id}</qtestReleaseCycleId>
@@ -401,11 +388,7 @@
 					<retryAttempts>${qtest.retry.attempts}</retryAttempts>
 					<enabled>${qtest.enabled}</enabled>
 					<failOnError>${qtest.fail.on.error}</failOnError>
-
-					<!-- Properties file location (optional fallback) -->
 					<propertiesFile>src/main/resources/qtest.properties</propertiesFile>
-
-					<!-- Cucumber JSON report location -->
 					<cucumberJsonReportDirectory>
 						${project.build.directory}/cucumber-reports</cucumberJsonReportDirectory>
 				</configuration>
